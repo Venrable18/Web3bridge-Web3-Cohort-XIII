@@ -27,16 +27,15 @@ contract SchoolManagement {
     }
 
 
-    function change_student_Status(uint index, Status _status) external {
-        students[index].status = _status;
-    }
+
 
     function deleteStudent(uint _id) external { 
         (bool found, uint index) = findStudentIndex(_id);
         require(found, "Student not found");
-        // I think the student status should just be change to RUSTICATED..
+        // Please this is my suggestion;
+        // I think the student status should just be changed to RUSTICATED..
         // Since it's not appropriate to just delete a student data like that for record purposes.
-        change_student_Status(_id, Status.RUSTICATED);
+        students[index].status = Status.RUSTICATED;
     }
 
     function getStudent(uint _id) external view returns (Student memory) {
