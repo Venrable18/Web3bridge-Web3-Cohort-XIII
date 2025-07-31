@@ -50,7 +50,7 @@ contract EmployeeManagementSystem {
         }
         revert INVALID_DATA_PASSED();
     }
-    function updateEmployeeData(address employeeAddress , Position role, string name)external{
+    function updateEmployeeData(address employeeAddress , Position role, string memory name)external{
         for(uint counter; counter< allEmployees.length; counter++){
             if(allEmployees[counter].employeeAddress == employeeAddress){
                 allEmployees[counter].role= role;
@@ -75,7 +75,7 @@ contract EmployeeManagementSystem {
     function getAllEmployees()external view returns(Employee[] memory){
         return allEmployees;
     }
-    
+
     function getEmployeeByAddress(address employeeAddress) external view returns(Employee memory) {
         for(uint counter; counter< allEmployees.length; counter++){
             if(allEmployees[counter].employeeAddress == employeeAddress){

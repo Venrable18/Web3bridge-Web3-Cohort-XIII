@@ -3,8 +3,9 @@
 
 import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
 
-const LockModule = buildModule("EmployeeManagementSystemModule", (m) => {
-  const lock = m.contract("Lock");
+
+const LockModule = buildModule("LockModule", (m) => {
+  const lock = m.contract("EmployeeManagementSystem");
   return { lock };
 });
 
