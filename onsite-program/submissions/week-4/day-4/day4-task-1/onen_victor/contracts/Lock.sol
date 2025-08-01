@@ -34,6 +34,7 @@ contract Web3BridgeGarageAccess {
         allEmployees.push(newEmp);
     }
 
+<<<<<<< HEAD
     function updateEmployee(
         address _wallet,
         string memory _name,
@@ -51,6 +52,9 @@ contract Web3BridgeGarageAccess {
             }
         }
     }
+=======
+  
+>>>>>>> origin
 
     function canAccessGarage(address _wallet) public view returns (bool) {
         Employee memory emp = employees[_wallet];
