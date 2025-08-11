@@ -2,68 +2,89 @@ import { time, loadFixture } from "@nomicfoundation/hardhat-toolbox/network-help
 import { expect } from "chai";
 import hre from "hardhat";
 
-describe("PiggyVest Basic Flow", function () {
-
+describe("PiggyVest (Partial Tests)", function () {
   async function deployFixture() {
+    const [owner, user1] = await hre.ethers.getSigners();
 
-    const [maker, user] = await hre.ethers.getSigners();
+    const PiggyVest = await hre.ethers.getContractFactory("PiggyVest");
+    const piggyVest = await PiggyVest.connect(owner).deploy();
 
-    const Factory = await hre.ethers.getContractFactory("PiggyFactory");
-    
-    const factory = await Factory.connect(maker).deploy();
+    const ERC20Mock = await hre.ethers.getContractFactory("ERC20Mock");
+    const erc20 = await ERC20Mock.connect(owner).deploy("MockToken", "MTK", user1.address, hre.ethers.parseEther("1000"));
 
-    await factory.connect(user).makeBox();
-    const boxAddress = await factory.findBox(user.address);
-    const vest = await hre.ethers.getContractAt("PiggyVest", boxAddress);
-
-    return { user, vest };
+    return { piggyVest, erc20, owner, user1 };
   }
 
-  it("creates a PiggyVest for the user", async () => {
-    const { user } = await loadFixture(deployFixture);
-    const Factory = await hre.ethers.getContractFactory("PiggyFactory");
-    const boxAddress = await Factory.connect(user.address);
-    expect(boxAddress).to.not.equal(0x0000000000000000000000000000000000000000);
+  it("should allow ETH savings creation", async () => {
+    const { piggyVest, user1 } = await loadFixture(deployFixture);
+
+    await piggyVest.connect(user1).createSaving(
+      "ETH Save",
+      "UserOne",
+      0,
+      hre.ethers.ZeroAddress,
+      0,
+      { value: hre.ethers.parseEther("1") }
+    );
+
+    const savings = await piggyVest.getUserSavings(user1.address);
+    expect(savings.length).to.equal(1);
+    expect(savings[0].amount).to.equal(hre.ethers.parseEther("1"));
   });
 
-  it("adds a saving with ETH", async () => {
-    const { user, vest } = await loadFixture(deployFixture);
-    const amount = hre.ethers.parseEther("1");
+  it("should allow ERC20 savings creation", async () => {
+    const { piggyVest, erc20, user1 } = await loadFixture(deployFixture);
 
-    await vest.connect(user).addSaving(hre.ethers.ZeroAddress, 60, {
-      value: amount,
-    });
+    await erc20.connect(user1).approve(piggyVest.target, hre.ethers.parseEther("10"));
 
-    const saving = await vest.seeSaving(0);
-    expect(saving[1]).to.equal(amount); // howMuch
+    await piggyVest.connect(user1).createSaving(
+      "Token Save",
+      "UserOne",
+      1,
+      erc20.target,
+      hre.ethers.parseEther("10")
+    );
+
+    const savings = await piggyVest.getUserSavings(user1.address);
+    expect(savings.length).to.equal(1);
+    expect(savings[0].tokenAddress).to.equal(erc20.target);
   });
 
-  it("withdraws after lock time", async () => {
-    const { user, vest } = await loadFixture(deployFixture);
-    const amount = hre.ethers.parseEther("1");
+  it("should apply penalty for early ETH withdrawal", async () => {
+    const { piggyVest, user1 } = await loadFixture(deployFixture);
 
-    await vest.connect(user).addSaving(hre.ethers.ZeroAddress, 1, {
-      value: amount,
-    });
+    await piggyVest.connect(user1).createSaving(
+      "Early Save",
+      "UserOne",
+      0,
+      hre.ethers.ZeroAddress,
+      60 * 60 * 24 * 30, // 30 days
+      { value: hre.ethers.parseEther("1") }
+    );
 
-    await time.increase(2);
-    await vest.connect(user).takeSaving(0);
+    await piggyVest.connect(user1).withdrawSaving(0);
 
-    const saving = await vest.seeSaving(0);
-    expect(saving[5]).to.equal(true); // taken
+    const savings = await piggyVest.getUserSavings(user1.address);
+    expect(savings[0].withdrawn).to.be.true;
   });
 
-  it("withdraws early with fee", async () => {
-    const { user, vest } = await loadFixture(deployFixture);
-    const amount = hre.ethers.parseEther("1");
+  it("should track maturity correctly", async () => {
+    const { piggyVest, user1 } = await loadFixture(deployFixture);
 
-    await vest.connect(user).addSaving(hre.ethers.ZeroAddress, 1000, {
-      value: amount,
-    });
+    const lockPeriod = 60 * 60 * 24 * 7;
 
-    await vest.connect(user).takeSaving(0);
+    await piggyVest.connect(user1).createSaving(
+      "Mature Save",
+      "UserOne",
+      0,
+      hre.ethers.ZeroAddress,
+      lockPeriod,
+      { value: hre.ethers.parseEther("1") }
+    );
 
-    const saving = await vest.seeSaving(0);
-    expect(saving[5]).to.equal(true); // taken
+    await time.increase(lockPeriod + 1);
+
+    const isMature = await piggyVest.connect(user1).isMature(0);
+    expect(isMature).to.equal(true);
   });
 });

@@ -1,33 +1,18 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.0;
 
 import "./PiggyVest.sol";
 
-contract PiggyFactory {
-    address public platform;
-
-    mapping(address => address) public personToBox;
-
-    event BoxMade(address indexed person, address box);
-
-    error BoxAlreadyMade();
+contract PiggyVestFactory {
+    address public owner;
+    PiggyVest public piggyVest;
 
     constructor() {
-        platform = msg.sender;
+        owner = msg.sender;
+        piggyVest = new PiggyVest();
     }
 
-    function makeBox() external {
-        if (personToBox[msg.sender] != address(0)) {
-            revert BoxAlreadyMade();
-        }
-
-        PiggyVest newBox = new PiggyVest(msg.sender, platform);
-        personToBox[msg.sender] = address(newBox);
-
-        emit BoxMade(msg.sender, address(newBox));
-    }
-
-    function findBox(address person) external view returns (address) {
-        return personToBox[person];
+    function getPiggyVestAddress() external view returns (address) {
+        return address(piggyVest);
     }
 }
