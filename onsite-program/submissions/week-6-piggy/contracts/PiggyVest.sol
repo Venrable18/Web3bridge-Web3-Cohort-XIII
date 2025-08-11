@@ -28,7 +28,7 @@ contract PiggyVest {
         uint256 lockPeriod;
         bool withdrawn;
     }
-    
+
     enum AssetType { ETH, ERC20 }
 
     address public owner;
@@ -187,3 +187,5 @@ contract PiggyVest {
         penaltyPercent = _newPercent;
     }
 }
+
+
