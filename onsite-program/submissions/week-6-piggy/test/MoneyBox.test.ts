@@ -21,9 +21,9 @@ describe("PiggyVest Basic Flow", function () {
 
   it("creates a PiggyVest for the user", async () => {
     const { user } = await loadFixture(deployFixture);
-    const factory = await hre.ethers.getContractAt("PiggyFactory");
-    const boxAddress = await factory.findBox(user.address);
-    expect(boxAddress).to.not.equal(hre.ethers.ZeroAddress);
+    const Factory = await hre.ethers.getContractFactory("PiggyFactory");
+    const boxAddress = await Factory.connect(user.address);
+    expect(boxAddress).to.not.equal(0x0000000000000000000000000000000000000000);
   });
 
   it("adds a saving with ETH", async () => {

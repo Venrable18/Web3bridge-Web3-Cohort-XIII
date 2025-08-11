@@ -1,13 +1,9 @@
-# Sample Hardhat Project
+Deployed Addresses
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a Hardhat Ignition module that deploys that contract.
+PiggyModule#PiggyFactory - 0x6b6c0eE71c703C51707A86f3bef0B4ACD9F4AB78
 
-Try running some of the following tasks:
+Verifying deployed contracts
 
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat ignition deploy ./ignition/modules/Lock.ts
-```
+Verifying contract "contracts/PiggyFactoryCreator.sol:PiggyFactory" for network lisk-sepolia...
+Successfully verified contract "contracts/PiggyFactoryCreator.sol:PiggyFactory" for network lisk-sepolia:
+  - https://sepolia-blockscout.lisk.com/address/0x6b6c0eE71c703C51707A86f3bef0B4ACD9F4AB78#code
