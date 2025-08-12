@@ -16,3 +16,15 @@
 [submodule "onsite-program/submissions/week-5/day-5/ONEN_VICTOR/lib/openzeppelin-contracts"]
 	path = onsite-program/submissions/week-5/day-5/ONEN_VICTOR/lib/openzeppelin-contracts
 	url = https://github.com/openzeppelin/openzeppelin-contracts
+[submodule "onsite-program/submissions/week-6-ERC721/lib/forge-std"]
+	path = onsite-program/submissions/week-6-ERC721/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
+[submodule "onsite-program/submissions/week-6-ERC721/lib/openzeppelin-contracts"]
+	path = onsite-program/submissions/week-6-ERC721/lib/openzeppelin-contracts
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts
+[submodule "onsite-program/submissions/week-6-ERC721/lib/v2-periphery"]
+	path = onsite-program/submissions/week-6-ERC721/lib/v2-periphery
+	url = https://github.com/Uniswap/v2-periphery
+[submodule "onsite-program/submissions/week-6-ERC721/lib/permit2"]
+	path = onsite-program/submissions/week-6-ERC721/lib/permit2
+	url = https://github.com/Uniswap/permit2
