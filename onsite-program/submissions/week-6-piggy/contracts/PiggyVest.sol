@@ -82,23 +82,22 @@ contract PiggyVest {
             if (_tokenAddress == address(0)) revert InvalidTokenAddress();
             if (_amount == 0) revert InvalidAmount();
             if (msg.value > 0) revert ETHNotAllowedForERC20();
-            IERC20 token = IERC20(_tokenAddress);
-            bool success = token.transferFrom(msg.sender, address(this), _amount);
+             bool success = token.transferFrom(msg.sender, address(this), _amount);
             if (!success) revert ERC20TransferFailed();
             amount = _amount;
         }
 
         Saving memory newSaving = Saving({
-            id: nextSavingId,
-            name: _name,
-            userName: _userName,
-            userAddress: msg.sender,
-            assetType: _assetType,
-            tokenAddress: _tokenAddress,
-            amount: amount,
-            startTime: block.timestamp,
-            lockPeriod: _lockPeriod,
-            withdrawn: false
+                                id: nextSavingId,
+                                name: _name,
+                                userName: _userName,
+                                userAddress: msg.sender,
+                                assetType: _assetType,
+                                tokenAddress: _tokenAddress,
+                                amount: amount,
+                                startTime: block.timestamp,
+                                lockPeriod: _lockPeriod,
+                                withdrawn: false
         });
 
         userSavings[msg.sender].push(newSaving);
