@@ -1,4 +1,3 @@
-// test/TimeNFT.js
 import { expect } from "chai";
 import { ethers } from "hardhat";
 
@@ -25,9 +24,11 @@ describe("TimeNFT", function () {
       Buffer.from(base64Json, "base64").toString()
     );
 
-    expect(jsonMetadata).to.have.property("name");
-    expect(jsonMetadata).to.have.property("image");
-    expect(jsonMetadata.image).to.include("data:image/svg+xml;base64,");
+    expect(jsonMetadata).to.have.property("name").that.equals("Dynamic Time NFT #1");
+    expect(jsonMetadata).to.have.property("description").that.equals(
+      "An NFT that displays the current blockchain time (updates when viewed)."
+    );
+    expect(jsonMetadata).to.have.property("image").that.includes("data:image/svg+xml;base64,");
 
     // Decode the SVG
     const base64Svg = jsonMetadata.image
@@ -35,7 +36,10 @@ describe("TimeNFT", function () {
       .split("?")[0]; // remove cache-busting param
     const svgContent = Buffer.from(base64Svg, "base64").toString();
 
-    expect(svgContent).to.include("BLOCKCHAIN CLOCK");
-    expect(svgContent).to.include(":"); // should contain time like "12:34:56"
+    expect(svgContent).to.include("Dynamic Time NFT");
+    expect(svgContent).to.include("Updates when viewed");
+    expect(svgContent).to.match(/\d{2}:\d{2}:\d{2}/); // Check for time format HH:MM:SS
   });
 });
+
+

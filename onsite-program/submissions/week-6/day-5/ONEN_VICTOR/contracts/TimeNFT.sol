@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.20;
+pragma solidity 0.8.30;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Base64.sol";
@@ -19,13 +19,13 @@ contract TimeNFT is ERC721 {
 
     function tokenURI(uint256 tokenId) public view override returns (string memory) {
         // require(_exists(tokenId), "ERC721: URI query for nonexistent token");
-        
+
         // Get current time components
         (string memory timeStr, uint256 timestamp) = getCurrentTime();
-        
+
         // Create dynamic SVG that changes with time
         string memory svg = generateSVG(timeStr);
-        
+
         // Create JSON metadata with cache-busting parameter
         string memory json = string(abi.encodePacked(
             '{"name": "Dynamic Time NFT #', Strings.toString(tokenId), '",',
@@ -34,25 +34,25 @@ contract TimeNFT is ERC721 {
             '"attributes": [{"trait_type": "Last Update", "value": "', timeStr, '"}]',
             '}'
         ));
-        
+
         return string(abi.encodePacked("data:application/json;base64,", Base64.encode(bytes(json))));
     }
-    
+
     function getCurrentTime() internal view returns (string memory, uint256) {
         uint256 timestamp = block.timestamp;
         uint256 hour = (timestamp % 86400) / 3600;
         uint256 minute = (timestamp % 3600) / 60;
         uint256 second = timestamp % 60;
-        
+
         string memory hoursStr = hour < 10 ? string(abi.encodePacked("0", Strings.toString(hour))) : Strings.toString(hour);
         string memory minutesStr = minute < 10 ? string(abi.encodePacked("0", Strings.toString(minute))) : Strings.toString(minute);
         string memory secondsStr = second < 10 ? string(abi.encodePacked("0", Strings.toString(second))) : Strings.toString(second);
-        
+
         string memory timeStr = string(abi.encodePacked(hoursStr, ":", minutesStr, ":", secondsStr));
-        
+
         return (timeStr, timestamp);
     }
-    
+
     function generateSVG(string memory timeStr) internal pure returns (string memory) {
         return string(abi.encodePacked(
             '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">',
