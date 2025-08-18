@@ -1,3 +1,9 @@
+import "@nomicfoundation/hardhat-toolbox";
+import { HardhatUserConfig } from "hardhat/config";
+
+import { vars } from "hardhat/config";
+
+const PRIVATE_KEY = vars.get("PRIVATE_KEY");
 
 const config: HardhatUserConfig = {
   solidity: "0.8.30",
@@ -28,4 +34,3 @@ const config: HardhatUserConfig = {
 };
 
 export default config;
-
